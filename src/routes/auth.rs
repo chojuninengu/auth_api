@@ -7,7 +7,7 @@ use jsonwebtoken::{encode, EncodingKey, Header};
 use serde_json::json;
 use utoipa::OpenApi;
 
-use crate::models::{LoginRequest, LoginResponse, Role, User};
+use crate::models::{LoginRequest, LoginResponse, Role};
 use crate::middleware::auth::Claims;
 
 #[derive(OpenApi)]
