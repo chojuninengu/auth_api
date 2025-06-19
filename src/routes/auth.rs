@@ -8,7 +8,7 @@ use serde_json::json;
 use utoipa::OpenApi;
 
 use crate::models::{LoginRequest, LoginResponse, Role, User};
-use middleware::Claims;
+use crate::middleware::Claims;
 
 #[derive(OpenApi)]
 #[openapi(
