@@ -14,7 +14,7 @@ pub struct Claims {
     pub exp: usize,
 }
 
-pub async fn auth_middleware<B>(
+pub async fn auth_middleware(
     req: Request<Body>,
     next: Next,
 ) -> Result<Response, StatusCode> {
