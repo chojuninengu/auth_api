@@ -1,5 +1,5 @@
 use axum::{
-    body::Body, http::{Request, StatusCode}, middleware::Next, response::{IntoResponse, Response}
+    body::Body, http::{Request, StatusCode}, middleware::Next, response::Response
 };
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use serde::{Deserialize, Serialize};
