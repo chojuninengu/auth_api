@@ -8,7 +8,7 @@ use serde_json::json;
 use utoipa::OpenApi;
 
 use crate::models::{LoginRequest, LoginResponse, Role, User};
-use crate::middleware::Claims;
+use crate::middleware::auth::Claims;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -26,6 +26,7 @@ pub struct AuthApi;
         (status = 401, description = "Invalid credentials")
     )
 )]
+
 pub async fn login(Json(payload): Json<LoginRequest>) -> impl IntoResponse {
     // In production, verify against a database
     if payload.username == "admin" && payload.password == "password" {
