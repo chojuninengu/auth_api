@@ -1,15 +1,13 @@
 use axum::{
-    http::{Request, StatusCode},
-    middleware::Next,
-    response::{IntoResponse, Response},
+    body::Body, http::{Request, StatusCode}, middleware::Next, response::{IntoResponse, Response}
 };
 use jsonwebtoken::{decode, DecodingKey, Validation};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 use crate::models::{Role, User};
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct Claims {
     pub sub: String,
     pub role: Role,
@@ -17,8 +15,8 @@ pub struct Claims {
 }
 
 pub async fn auth_middleware<B>(
-    req: Request<B>,
-    next: Next<B>,
+    req: Request<Body>,
+    next: Next,
 ) -> Result<Response, StatusCode> {
     let auth_header = req
         .headers()
