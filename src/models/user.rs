@@ -9,7 +9,7 @@ pub struct User {
     pub role: Role,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, ToSchema, Clone, PartialEq, Debug)]
 pub enum Role {
     Admin,
     User,
