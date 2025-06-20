@@ -13,9 +13,9 @@ pub mod routes;
 pub mod middleware;
 pub mod config;
 
-use crate::{routes::{auth, protected}, middleware::auth::auth_middleware};
-
+use crate::{routes::{auth, protected}, middleware::auth::auth_middleware};  
 #[tokio::main]
+
 async fn main() {
     // Load environment variables from .env file if present
     dotenv().ok();
@@ -61,4 +61,9 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     println!("Server running on http://0.0.0.0:3000");
     axum::serve(listener, app).await.unwrap();
+    call(2,4);
+}
+
+fn call(num1: u32 , num2: u32) {
+    // jtu tjo see how to seee how ti the ne go just too see how to make sure of it to see wo to sure this will come fae
 }
