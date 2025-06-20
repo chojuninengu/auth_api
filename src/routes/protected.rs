@@ -48,19 +48,16 @@ pub async fn admin_route(Extension(user): Extension<Arc<User>>) -> impl IntoResp
 )]
 pub async fn user_route(Extension(user): Extension<Arc<User>>) -> impl IntoResponse {
     // Both Admin and User roles can access this route
-    match user.role {
-        Role::User | Role::Admin => {
-            (StatusCode::OK, Json(json!({
-                "message": "User access granted",
-                "username": user.username,
-                "role": format!("{:?}", user.role)
-            }))).into_response()
-        },
-        _ => {
-            (
-                StatusCode::FORBIDDEN,
-                Json(json!({"error": "User access required"})),
-            ).into_response()
-        }
+    if user.role == Role::User || user.role == Role::Admin {
+        (StatusCode::OK, Json(json!({
+            "message": "User access granted",
+            "username": user.username,
+            "role": format!("{:?}", user.role)
+        }))).into_response()
+    } else {
+        (
+            StatusCode::FORBIDDEN,
+            Json(json!({"error": "User access required"})),
+        ).into_response()
     }
 }
