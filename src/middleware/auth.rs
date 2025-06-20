@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 use crate::models::{Role, User};
+use crate::config::jwt;
 
 #[derive(Serialize, Deserialize)]
 pub struct Claims {
@@ -28,7 +29,7 @@ pub async fn auth_middleware(
         .strip_prefix("Bearer ")
         .ok_or(StatusCode::UNAUTHORIZED)?;
 
-    let key = DecodingKey::from_secret("your-secret-key".as_ref());
+    let key = jwt::get_decoding_key();
     let token_data = decode::<Claims>(token, &key, &Validation::default())
         .map_err(|_| StatusCode::UNAUTHORIZED)?;
 
