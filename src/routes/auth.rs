@@ -3,7 +3,7 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use jsonwebtoken::{encode, EncodingKey, Header};
+use jsonwebtoken::{encode, Header};
 use serde_json::json;
 use utoipa::OpenApi;
 use bcrypt::{hash, DEFAULT_COST};
@@ -109,7 +109,7 @@ pub async fn register(Json(payload): Json<RegisterRequest>) -> impl IntoResponse
     // For this example, we'll simulate a successful registration with a new user ID
     
     // Hash the password - in production this would be stored in a database
-    let hashed_password = match hash(payload.password, DEFAULT_COST) {
+    let _hashed_password = match hash(payload.password, DEFAULT_COST) {
         Ok(hashed) => hashed,
         Err(_) => {
             return (
