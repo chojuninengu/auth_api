@@ -10,6 +10,7 @@ use bcrypt::{hash, DEFAULT_COST};
 
 use crate::models::{LoginRequest, LoginResponse, Role, RegisterRequest, RegisterResponse};
 use crate::middleware::auth::Claims;
+use crate::config::jwt;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -40,7 +41,26 @@ pub async fn login(Json(payload): Json<LoginRequest>) -> impl IntoResponse {
         let token = encode(
             &Header::default(),
             &claims,
-            &EncodingKey::from_secret("your-secret-key".as_ref()),
+            &jwt::get_encoding_key(),
+        )
+        .unwrap();
+
+        return (
+            StatusCode::OK,
+            Json(LoginResponse { token }),
+        ).into_response();
+    } else if payload.username == "user" && payload.password == "password" {
+        // Also allow regular user login for testing purposes
+        let claims = Claims {
+            sub: payload.username.clone(),
+            role: Role::User,
+            exp: (chrono::Utc::now() + chrono::Duration::hours(24)).timestamp() as usize,
+        };
+
+        let token = encode(
+            &Header::default(),
+            &claims,
+            &jwt::get_encoding_key(),
         )
         .unwrap();
 
@@ -102,11 +122,15 @@ pub async fn register(Json(payload): Json<RegisterRequest>) -> impl IntoResponse
     // Generate a new user ID (in production, this would come from the database)
     let user_id = 2; // For demonstration purposes
 
+    // In a real application, we would store the new user with role "User" in the database
+    // For this example, we'll just return a successful response
+    // The role will be assigned when they log in
+    
     // Return success response
     (
         StatusCode::CREATED,
         Json(RegisterResponse {
-            message: format!("User {} registered successfully", payload.username),
+            message: format!("User {} registered successfully with role User", payload.username),
             user_id,
         })
     ).into_response()
