@@ -24,3 +24,4 @@ No extra lines or explanations. Exactly the lines provided with the edits applie
 
 # Cargo lock file (now ignored)
 Cargo.lock
+.env
