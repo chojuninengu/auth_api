@@ -19,13 +19,16 @@ async fn main() {
         info(title = "Auth API", description = "A simple auth API"),
         paths(
             auth::login,
+            auth::register,
             protected::admin_route
         ),
         components(schemas(
            models::User,
            models::Role,
            models::LoginRequest,
-           models::LoginResponse
+           models::LoginResponse,
+           models::RegisterRequest,
+           models::RegisterResponse
         ))
     )]
     struct ApiDoc;
@@ -33,6 +36,7 @@ async fn main() {
     let app = Router::new()
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .route("/login", post(auth::login))
+        .route("/register", post(auth::register))
         .route("/admin", get(protected::admin_route))
         // .layer(axum::middleware::from_fn::<_, _>(auth_middleware))
         .layer(CorsLayer::permissive());
