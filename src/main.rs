@@ -34,7 +34,7 @@ async fn main() {
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .route("/login", post(auth::login))
         .route("/admin", get(protected::admin_route))
-        .layer(axum::middleware::from_fn(auth_middleware))
+        // .layer(axum::middleware::from_fn::<_, _>(auth_middleware))
         .layer(CorsLayer::permissive());
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
