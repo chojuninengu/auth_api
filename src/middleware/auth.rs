@@ -1,7 +1,7 @@
 use axum::{
     body::Body, http::{Request, StatusCode}, middleware::Next, response::Response
 };
-use jsonwebtoken::{decode, DecodingKey, Validation};
+use jsonwebtoken::{decode, Validation};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
