@@ -12,7 +12,7 @@ use crate::models::{Role, User};
 
 #[derive(OpenApi)]
 #[openapi(
-    paths(admin_route),
+    paths(admin_route, user_route),
     components(schemas(User))
 )]
 pub struct ProtectedApi;
@@ -34,5 +34,33 @@ pub async fn admin_route(Extension(user): Extension<Arc<User>>) -> impl IntoResp
             StatusCode::FORBIDDEN,
             Json(json!({"error": "Admin access required"})),
         ).into_response()
+    }
+}
+
+#[utoipa::path(
+    get,
+    path = "/user",
+    responses(
+        (status = 200, description = "User access granted", body = User),
+        (status = 403, description = "Forbidden")
+    ),
+    security(("api_key" = []))
+)]
+pub async fn user_route(Extension(user): Extension<Arc<User>>) -> impl IntoResponse {
+    // Both Admin and User roles can access this route
+    match user.role {
+        Role::User | Role::Admin => {
+            (StatusCode::OK, Json(json!({
+                "message": "User access granted",
+                "username": user.username,
+                "role": format!("{:?}", user.role)
+            }))).into_response()
+        },
+        _ => {
+            (
+                StatusCode::FORBIDDEN,
+                Json(json!({"error": "User access required"})),
+            ).into_response()
+        }
     }
 }
