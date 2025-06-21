@@ -9,7 +9,7 @@ pub struct User {
     pub role: Role,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Clone, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Clone, PartialEq)]
 pub enum Role {
     Admin,
     User,
@@ -24,17 +24,4 @@ pub struct LoginRequest {
 #[derive(Serialize, ToSchema)]
 pub struct LoginResponse {
     pub token: String,
-}
-
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct RegisterRequest {
-    pub username: String,
-    pub password: String,
-    pub confirm_password: String,
-}
-
-#[derive(Serialize, ToSchema)]
-pub struct RegisterResponse {
-    pub message: String,
-    pub user_id: i32,
 }
