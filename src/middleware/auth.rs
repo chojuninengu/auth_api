@@ -1,12 +1,14 @@
 use axum::{
-    body::Body, http::{Request, StatusCode}, middleware::Next, response::Response
+    body::Body,
+    http::{Request, StatusCode},
+    middleware::Next,
+    response::Response,
 };
-use jsonwebtoken::{decode, Validation};
+use jsonwebtoken::{decode, DecodingKey, Validation};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 use crate::models::{Role, User};
-use crate::config::jwt;
 
 #[derive(Serialize, Deserialize)]
 pub struct Claims {
@@ -15,10 +17,7 @@ pub struct Claims {
     pub exp: usize,
 }
 
-pub async fn auth_middleware(
-    req: Request<Body>,
-    next: Next,
-) -> Result<Response, StatusCode> {
+pub async fn auth_middleware(req: Request<Body>, next: Next) -> Result<Response, StatusCode> {
     let auth_header = req
         .headers()
         .get("Authorization")
@@ -29,7 +28,7 @@ pub async fn auth_middleware(
         .strip_prefix("Bearer ")
         .ok_or(StatusCode::UNAUTHORIZED)?;
 
-    let key = jwt::get_decoding_key();
+    let key = DecodingKey::from_secret("your-secret-key".as_ref());
     let token_data = decode::<Claims>(token, &key, &Validation::default())
         .map_err(|_| StatusCode::UNAUTHORIZED)?;
 
