@@ -15,11 +15,12 @@ pub mod utils;
 
 use crate::{
     middleware::auth::auth_middleware,
-    routes::{auth, protected},
+    routes::{auth, protected}, utils::load_env,
 };
 
 #[derive(Debug, Clone)]
 pub struct AppState {
+    pub config: utils::Config,
     pub users: Arc<Mutex<Vec<models::User>>>,
 }
 
@@ -38,7 +39,8 @@ async fn main() {
     )]
     struct ApiDoc;
 
-    let state = AppState { users: Arc::new(Mutex::new(vec![])) };
+    let state = AppState {config: load_env(),
+         users: Arc::new(Mutex::new(vec![])) };
 
     let app = Router::new()
         .route("/admin", get(protected::admin_route))
