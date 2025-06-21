@@ -4,6 +4,7 @@ use bcrypt::hash_with_salt;
 use jsonwebtoken::{encode, EncodingKey, Header};
 use serde_json::json;
 use utoipa::OpenApi;
+use utoipa_swagger_ui::Config;
 
 use crate::middleware::auth::Claims;
 use crate::models::{LoginRequest, LoginResponse, Role};
@@ -47,11 +48,11 @@ pub async fn login(
         role: user.unwrap().role.clone(),
         exp: (chrono::Utc::now() + chrono::Duration::hours(24)).timestamp() as usize,
     };
-
+    let config = state.config.clone();
     let token = encode(
         &Header::default(),
         &claims,
-        &EncodingKey::from_secret("your-secret-key".as_ref()),
+        &EncodingKey::from_secret(config.jwt_secret.as_ref()),
     )
     .unwrap();
 
