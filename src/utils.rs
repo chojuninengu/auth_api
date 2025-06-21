@@ -1,4 +1,5 @@
 use dotenvy::dotenv;
+#[derive(Debug, Clone)]
 pub struct  Config{
     pub jwt_salt: String,
     pub jwt_secret: String,
