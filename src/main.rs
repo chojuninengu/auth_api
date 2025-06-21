@@ -20,7 +20,7 @@ use crate::{
 
 #[derive(Debug, Clone)]
 pub struct AppState {
-    pub config: utils::Config,
+    pub config: Arc<utils::Config>,
     pub users: Arc<Mutex<Vec<models::User>>>,
 }
 
@@ -38,13 +38,16 @@ async fn main() {
         ))
     )]
     struct ApiDoc;
+    
 
-    let state = AppState {config: load_env(),
+    let state = AppState {
+         config: Arc::new(load_env()),
          users: Arc::new(Mutex::new(vec![])) };
+
 
     let app = Router::new()
         .route("/admin", get(protected::admin_route))
-        .layer(axum::middleware::from_fn(auth_middleware))
+        .layer(axum::middleware::from_fn_with_state(auth_middleware))
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .route("/login", post(auth::login))
         .route("/register", post(auth::register))
