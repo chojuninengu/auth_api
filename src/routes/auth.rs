@@ -9,7 +9,7 @@ use crate::middleware::auth::Claims;
 use crate::models::{LoginRequest, LoginResponse, Role};
 use crate::AppState;
 
-const JWT_SALT: &[u8; 16] = b"your-secret-salt"; // Use a secure key in production
+const JWT_SALT: &[u8; 16] = b"your-salt-valuee"; // Use a secure key in production
 
 #[derive(OpenApi)]
 #[openapi(paths(login), components(schemas(LoginRequest, LoginResponse)))]
@@ -30,17 +30,16 @@ pub async fn login(
 ) -> impl IntoResponse {
     let users = state.users.lock().unwrap();
 
-    //Check if the user exist and the password matches
+    // Check if the user exists and the password matches
     let user = users.iter().find(|u| u.username == payload.username);
-
     if user.is_none()
         || bcrypt::verify(payload.password.as_bytes(), &user.unwrap().password).ok() != Some(true)
     {
         return (
             StatusCode::UNAUTHORIZED,
-            Json(json!({"error": "Invalid credentilas"})),
+            Json(json!({"error": "Invalid credentials"})),
         )
-            .into_response();
+            .into_response()
     }
 
     let claims = Claims {
@@ -64,15 +63,15 @@ pub async fn login(
     path = "/register",
     request_body = LoginRequest,
     responses(
-        (status = 200, description = "User regisered successfully", body = LoginResponse),
-        (status = 401, description = "Bad request")
+        (status = 201, description = "User registered successfully"),
+        (status = 400, description = "Bad request")
     )
 )]
 pub async fn register(
     State(state): State<AppState>,
     Json(payload): Json<LoginRequest>,
 ) -> impl IntoResponse {
-    // In production, verify against a database
+    // In production, save to a database
     if payload.username.is_empty() || payload.password.is_empty() {
         return (
             StatusCode::BAD_REQUEST,
@@ -88,7 +87,7 @@ pub async fn register(
     let mut users = state.users.lock().unwrap();
 
     let new_user = crate::models::User {
-        id: users.len() as i32 + 1,
+        id: users.len() as i32 + 1, // Simple ID generation
         username: payload.username,
         password: hashed_password.to_string(),
         role: Role::User,
